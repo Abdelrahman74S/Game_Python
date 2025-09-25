@@ -20,7 +20,7 @@ class Apple:
 # variables
 speed = 3
 Score = 0        
-        
+Score_floor =0    
 TILESIZE = 32 
 
 # floor
@@ -53,6 +53,7 @@ pickup.set_volume(0.1)
 def update():
     global speed
     global Score
+    global Score_floor
     keys = pygame.key.get_pressed()
     
     if keys[pygame.K_RIGHT]:
@@ -65,6 +66,7 @@ def update():
         if apple.rect.top >= floor_rect.top:
             apples.remove(apple)
             apples.append(Apple(apple_image, (random.randint(50, 300), -50), speed))
+            Score_floor += 1
             continue
 
         if palyer_rect.colliderect(apple.rect):
@@ -79,6 +81,7 @@ def draw():
     screen.fill("lightblue")    
     screen.blit(floor_image, floor_rect)
     screen.blit(palyer_image, palyer_rect)
+    
  
     for apple in apples:
         screen.blit(apple.image, apple.rect)
@@ -86,8 +89,10 @@ def draw():
     
     score_text = font.render(f'Score: {int(Score)}', True, 'white')   
     score_speed = font.render(f'Speed: {int(speed)}', True, 'white')   
+    floor_sorce = font.render(f'Score floor: {int(Score_floor)}', True, 'white')   
     screen.blit(score_text, (5, 5)) 
     screen.blit(score_speed, (5, 30)) 
+    screen.blit(floor_sorce, (5, 60)) 
        
  
     
@@ -97,7 +102,19 @@ while running:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+    
     update()
+    
+            
+    if Score_floor >= 9:
+        score_text_floor = font.render(f'Game Over! Your Score: {int(Score)}', True, 'white')
+        screen.blit(score_text_floor, (50, screen.get_height() / 2))
+        pygame.display.update()
+        pygame.time.delay(3000)
+        pygame.quit()
+        sys.exit()
+        break
+
     draw()        
     clock.tick(60)        
     pygame.display.update()
